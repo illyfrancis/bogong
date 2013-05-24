@@ -6,46 +6,51 @@
 angular.module('myApp.controllers', [])
   .controller('ColorCtrl', ['$scope', 'ColorService', function($scope, ColorService) {
     var colorCtrl = {
-      colorOptions: [],
+      availSelection: [],
+      selectedSelection: [],
       availableColors : [],
       selectedColors: [],
-      toggleColors: function (isSelect) {
-        if (this.colorOptions.length > 0) {
-          var toggle = _.isUndefined(isSelect);
-          _.each(this.colorOptions, function (color) {
-            color.selected = toggle ? !color.selected : isSelect;
+
+      toggle: function (colors) {
+        if (colors.length > 0) {
+          _.each(colors, function (color) {
+            color.selected = !color.selected;
           });
           this.refreshColors();
-        } else {
-          console.log('nothing selected');
         }
       },
+
       refreshColors: function () {
         this.availableColors = ColorService.availableColors();
         this.selectedColors = ColorService.selectedColors();
       },
-      addColor: function () {
-        this.toggleColors(true);
+
+      addColor: function (colors) {
+        this.toggle(colors);
+        this.selectedSelection = this.availSelection;
+        this.availSelection = [];
       },
-      removeColor: function () {
-        this.toggleColors(false);
+
+      removeColor: function (colors) {
+        this.toggle(colors);
+        this.availSelection = this.selectedSelection;
+        this.selectedSelection = [];
       },
-      moveUp: function () {
-        console.log('up');
-        if (this.colorOptions.length > 0) {
-          var first = this.colorOptions[0];
-          // only move selected items
-          if (first.selected) {
-            // first color shouldn't be at the top
-            if (first === this.selectedColors[0]) {
-            } else {
-              _.each(this.colorOptions, function (item) {
-                this.shiftUp(item);
-              }, this);
-            }
-          }
+
+      moveTop: function (colors) {
+        while (this.canMoveUp(colors)) {
+          this.moveUp(colors);
         }
       },
+
+      moveUp: function (colors) {
+        if (this.canMoveUp(colors)) {
+          _.each(this.selectedSelection, function (item) {
+            this.shiftUp(item);
+          }, this);
+        }
+      },
+
       shiftUp: function (item) {
         var index = this.selectedColors.indexOf(item);
         if (index > 0) {
@@ -56,8 +61,43 @@ angular.module('myApp.controllers', [])
           this.selectedColors = ColorService.sort(this.selectedColors);
         }
       },
-      moveDown: function () {
-        console.log('down');
+
+      canMoveUp: function (colors) {
+        return colors.length > 0 && this.selectedColors.indexOf(colors[0]) > 0;
+      },
+
+      moveBottom: function (colors) {
+        while (this.canMoveDown(colors)) {
+          this.moveDown(colors);
+        }
+      },
+
+      moveDown: function (colors) {
+        var last = colors[colors.length-1];
+        if (colors.length > 0) {
+          if (this.selectedColors.indexOf(last) < this.selectedColors.length-1) {
+            var reverse = _.toArray(this.selectedSelection).reverse();
+            _.each(reverse, function (item) {
+              this.shiftDown(item);
+            }, this);
+          }
+        }
+      },
+
+      shiftDown: function (item) {
+        var index = this.selectedColors.indexOf(item);
+        if (index >= 0) {
+          var next = this.selectedColors[index+1],
+            position = next.position;
+          next.position = item.position;
+          item.position = position;
+          this.selectedColors = ColorService.sort(this.selectedColors);
+        }
+      },
+
+      canMoveDown: function (colors) {
+        return colors.length > 0 &&
+          this.selectedColors.indexOf(colors[colors.length-1]) < this.selectedColors.length-1;
       }
     };
 

@@ -45,7 +45,8 @@ angular.module('myApp.services', []).
     // dummy ordering for all selected colors
     (function () {
       var position = 0,
-        selected = _.where(colors, {selected: true});
+        selected = colors;
+        // selected = _.where(colors, {selected: true});
       _.each(selected, function (color) {
         color.position = ++position;
       });

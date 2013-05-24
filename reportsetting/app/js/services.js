@@ -1,3 +1,4 @@
+/*global _*/
 'use strict';
 
 /* Services */
@@ -33,39 +34,50 @@ angular.module('myApp.services', []).
   })
   .service('ColorService', function () {
     var colors = [
-      {name:'green', shade:'dark', selected: true},
-      {name:'black', shade:'dark', selected: false},
-      {name:'white', shade:'light', selected: false},
-      {name:'red', shade:'dark', selected: false},
-      {name:'blue', shade:'dark', selected: false},
-      {name:'yellow', shade:'light', selected: false}
+      {name:'green', shade:'dark', position: 0, selected: false},
+      {name:'black', shade:'dark', position: 0, selected: true},
+      {name:'white', shade:'light', position: 0, selected: false},
+      {name:'red', shade:'dark', position: 0, selected: true},
+      {name:'blue', shade:'dark', position: 0, selected: true},
+      {name:'yellow', shade:'light', position: 0, selected: false}
     ];
+
+    // dummy ordering for all selected colors
+    (function () {
+      var position = 0,
+        selected = _.where(colors, {selected: true});
+      _.each(selected, function (color) {
+        color.position = ++position;
+      });
+    })();
+
     var ColorService = {
       colors: function () {
         console.log('colors()');
         return colors;
       },
-      selectedColors: function () {
-        var selected = [];
-        angular.forEach(colors, function (color) {
-          if (color.selected) {
-            selected.push(color);
-          }
+      sortFirst: function () {
+        colors = _.sortBy(colors, function (color) {
+          return color.name;
         });
-        console.log('selectedColors');
-        return selected;
+      },
+      sort: function (colors) {
+        return _.sortBy(colors, function (color) {
+          return color.position;
+        });
+      },
+      selectedColors: function () {
+        // return _.where(colors, {selected: true});
+        return _.sortBy(_.where(colors, {selected: true}), function (color) {
+          return color.position;
+        });
       },
       availableColors: function () {
-        var available = [];
-        angular.forEach(colors, function (color) {
-          if (!color.selected) {
-            available.push(color);
-          }
-        });
-        console.log('availableColors');
-        return available;
+        return _.where(colors, {selected: false});
       }
     };
+
+    ColorService.sortFirst();
 
     return ColorService;
   });

@@ -1,21 +1,25 @@
-<div class="row-fluid" ng-controller="ReportSettingsCtrl">
+<div class="row-fluid" ng-controller="ColorCtrl">
   <span style="display: inline-block">
     <label><h4>Available</h4></label>
-    <select multiple="true" size="8" ng-model="colorOptions" ng-options="c.name for c in availableColors" ng-dblclick="selectColors()"></select><br>
+    <select multiple="true" size="8" ng-model="color.colorOptions" ng-options="c.name for c in color.availableColors" ng-dblclick="color.toggleColors()"></select>
     <div class="btn-group btn-group-vertical">
-        <button type="button" class="btn add-columns" ng-click="addColor()"><i class="icon-arrow-right"></i></button>
-        <button type="button" class="btn remove-columns" ng-click="removeColor()"><i class="icon-arrow-left"></i></button>
+        <button type="button" class="btn add-columns" ng-click="color.addColor()"><i class="icon-arrow-right"></i></button>
+        <button type="button" class="btn remove-columns" ng-click="color.removeColor()"><i class="icon-arrow-left"></i></button>
     </div>
   </span>
 
   <span style="display: inline-block">
     <label><h4>Selected</h4></label>
-    <select multiple="true" size="8" ng-model="colorOptions" ng-options="c.name for c in selectedColors" ng-dblclick="selectColors()"></select><br>
+    <select multiple="true" size="8" ng-model="color.colorOptions" ng-options="c.name for c in color.selectedColors" ng-dblclick="color.toggleColors()"></select>
+    <div class="btn-group btn-group-vertical">
+        <button type="button" class="btn move-up" ng-click="color.moveUp()" ng-disabled="!color.colorOptions.length"><i class="icon-arrow-up"></i></button>
+        <button type="button" class="btn move-down" ng-click="color.moveDown()"><i class="icon-arrow-down"></i></button>
+    </div>
+
   </span>
 
 <pre>
-Currently selected: {{ {selected_color:colorOptions} | json }}
+Currently selected: {{ {selected_color:color.colorOptions} | json }}
 </pre>
-
 
 </div>

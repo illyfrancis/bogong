@@ -1,0 +1,21 @@
+<div class="row-fluid" ng-controller="ReportSettingsCtrl">
+  <span style="display: inline-block">
+    <label><h4>Available</h4></label>
+    <select multiple="true" size="8" ng-model="colorOptions" ng-options="c.name for c in availableColors" ng-dblclick="selectColors()"></select><br>
+    <div class="btn-group btn-group-vertical">
+        <button type="button" class="btn add-columns" ng-click="addColor()"><i class="icon-arrow-right"></i></button>
+        <button type="button" class="btn remove-columns" ng-click="removeColor()"><i class="icon-arrow-left"></i></button>
+    </div>
+  </span>
+
+  <span style="display: inline-block">
+    <label><h4>Selected</h4></label>
+    <select multiple="true" size="8" ng-model="colorOptions" ng-options="c.name for c in selectedColors" ng-dblclick="selectColors()"></select><br>
+  </span>
+
+<pre>
+Currently selected: {{ {selected_color:colorOptions} | json }}
+</pre>
+
+
+</div>

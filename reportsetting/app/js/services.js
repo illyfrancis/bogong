@@ -68,13 +68,10 @@ angular.module('myApp.services', []).
         });
       },
       selectedColors: function () {
-        // return _.where(colors, {selected: true});
-        return _.sortBy(_.where(colors, {selected: true}), function (color) {
-          return color.position;
-        });
+        return this.sort(_.where(colors, {selected: true}));
       },
       availableColors: function () {
-        return _.where(colors, {selected: false});
+        return this.sort(_.where(colors, {selected: false}));
       }
     };
 
